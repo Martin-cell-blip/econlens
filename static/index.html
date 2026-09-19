@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EconLens — IA Commentary Coach</title>
+<style>
+:root{--ink:#1c2422;--muted:#5a6660;--accent:#216a50;--accent-soft:#e4efe8;
+--warn:#96660f;--warn-soft:#f6edda;--line:#dce3dd;--bg:#f5f7f4;--surface:#fff;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 Georgia,"Times New Roman",serif;}
+header{background:var(--accent);color:#fff;padding:14px 24px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+header h1{font-size:1.15rem;margin:0;font-weight:700}
+header .sub{opacity:.85;font-size:.85rem}
+#ai-badge{margin-left:auto;font-size:.78rem;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 12px}
+main{max-width:1180px;margin:0 auto;padding:22px 24px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.pane{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+label{display:block;font-weight:700;font-size:.85rem;margin:12px 0 4px}
+textarea,input[type=text]{width:100%;border:1px solid var(--line);border-radius:6px;padding:9px 11px;
+  font:14px/1.6 Georgia,serif;background:var(--bg);color:var(--ink);resize:vertical}
+textarea:focus,input:focus{outline:2px solid var(--accent)}
+#article{height:130px} #draft{height:300px}
+.row{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+button{border:0;border-radius:6px;padding:9px 18px;font:700 14px Georgia,serif;cursor:pointer}
+#btn-preflight{background:var(--accent-soft);color:var(--accent)}
+#btn-ai{background:var(--accent);color:#fff}
+button:disabled{opacity:.5;cursor:not-allowed}
+#wc{font-size:.82rem;color:var(--muted);margin-left:auto}
+#wc.over{color:var(--warn);font-weight:700}
+.check{border-left:4px solid var(--line);padding:7px 12px;margin:8px 0;font-size:.88rem;background:var(--bg);border-radius:0 6px 6px 0}
+.check.pass{border-left-color:var(--accent)} .check.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.check .lbl{font-weight:700}
+.crit{border:1px solid var(--line);border-radius:8px;margin:10px 0;overflow:hidden}
+.crit-h{background:var(--accent-soft);padding:7px 14px;font-weight:700;font-size:.9rem;display:flex;justify-content:space-between}
+.crit-b{padding:8px 14px;font-size:.88rem}
+.issue{margin:8px 0;padding:8px 10px;background:var(--bg);border-radius:6px}
+.issue q{font-style:italic;color:var(--accent)}
+.issue .soc{font-weight:700;margin-top:4px}
+.strength{color:var(--accent);font-size:.86rem;margin:4px 0}
+.meta-line{font-size:.8rem;color:var(--muted);margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+#report-link a{color:var(--accent)}
+.notice{font-size:.82rem;color:var(--muted);margin-top:6px}
+.err{color:var(--warn);font-size:.86rem;margin-top:8px}
+.next-focus{background:var(--accent);color:#fff;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:.9rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>EconLens · IA Commentary Coach</h1>
+  <span class="sub">criterion-referenced feedback — never ghost-written</span>
+  <span id="ai-badge">…</span>
+</header>
+<main>
+  <section class="pane">
+    <label for="title">Commentary title</label>
+    <input type="text" id="title" placeholder="e.g. Sugar tax commentary">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px">
+      <div><label for="unit">Syllabus unit</label><select id="unit"><option value="">— select —</option></select></div>
+      <div><label for="key_concept">Key concept (lens)</label><select id="key_concept"><option value="">— select —</option></select></div>
+      <div><label for="source_name">Article source</label><input type="text" id="source_name" placeholder="e.g. Financial Times"></div>
+      <div><label for="pub_date">Article date</label><input type="text" id="pub_date" placeholder="YYYY-MM-DD"></div>
+    </div>
+    <label for="focus_question">Focus question (optional but recommended)</label>
+    <input type="text" id="focus_question" placeholder="To what extent will the 20% tax reduce consumption?">
+    <label for="article">Article text (paste; used to check application)</label>
+    <textarea id="article" placeholder="Paste the news article here…"></textarea>
+    <label for="draft">Your draft</label>
+    <textarea id="draft" placeholder="Paste or write your commentary draft here…"></textarea>
+    <div class="row">
+      <button id="btn-preflight">Pre-flight check</button>
+      <button id="btn-coach" style="background:#28437c;color:#fff">Coach</button>
+      <button id="btn-ai">AI criterion feedback</button>
+      <button id="btn-portfolio" style="background:var(--warn-soft);color:var(--warn)">Portfolio status</button>
+      <span id="wc">0 words</span>
+    </div>
+    <p class="notice">Every round is recorded (hash, word count, revision delta) into your
+      <strong>process archive</strong> — export it to show your teacher how the draft evolved.</p>
+    <div id="report-link"></div>
+  </section>
+  <section class="pane">
+    <h2 style="font-size:1rem;margin:0 0 6px">Results</h2>
+    <div id="results"><p class="notice">Run a pre-flight check to start. Pre-flight works fully offline;
+      AI feedback needs an API key on the server.</p></div>
+  </section>
+</main>
+<script>
+let SESSION=null, CONFIG=null;
+const $=id=>document.getElementById(id);
+
+fetch('/api/config').then(r=>r.json()).then(c=>{
+  CONFIG=c;
+  $('ai-badge').textContent=c.ai_enabled?'AI feedback: on':'AI feedback: off (preflight only)';
+  $('btn-ai').disabled=!c.ai_enabled;
+  for(const u of c.units) $('unit').insertAdjacentHTML('beforeend',`<option>${u}</option>`);
+  for(const k of c.key_concepts) $('key_concept').insertAdjacentHTML('beforeend',`<option>${k}</option>`);
+});
+
+$('draft').addEventListener('input',()=>{
+  const n=($('draft').value.match(/[A-Za-z][A-Za-z''-]*/g)||[]).length;
+  const el=$('wc'); el.textContent=n+' words';
+  el.className=(CONFIG&&n>CONFIG.word_limit)?'over':'';
+  el.id='wc';
+});
+
+async function review(useAI){
+  const body={session_id:SESSION,title:$('title').value,article:$('article').value,
+              draft:$('draft').value,use_ai:useAI,
+              unit:$('unit').value,key_concept:$('key_concept').value,
+              source_name:$('source_name').value,pub_date:$('pub_date').value,
+              focus_question:$('focus_question').value};
+  $('btn-preflight').disabled=true;$('btn-ai').disabled=true;
+  try{
+    const r=await fetch('/api/review',{method:'POST',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok){const e=await r.json().catch(()=>({detail:r.statusText}));throw new Error(e.detail);}
+    const data=await r.json();
+    SESSION=data.session_id;
+    render(data);
+    $('report-link').innerHTML=
+      `<p class="notice">Session <code>${data.session_id}</code> · round ${data.round} · `+
+      `<a href="/api/report/${data.session_id}" target="_blank">open process archive</a></p>`;
+  }catch(e){
+    $('results').insertAdjacentHTML('afterbegin',`<p class="err">${e.message}</p>`);
+  }finally{
+    $('btn-preflight').disabled=false;
+    $('btn-ai').disabled=!(CONFIG&&CONFIG.ai_enabled);
+  }
+}
+$('btn-preflight').onclick=()=>review(false);
+$('btn-ai').onclick=()=>review(true);
+
+const STAGE_LABEL={rq:'Research question',claim:'Claim / evidence',
+                   evaluation:'Evaluation chain',draft:'Draft'};
+const SEV_COLOR={critical:'#b02e2e',major:'var(--warn)',minor:'#28437c',
+                 opportunity:'var(--accent)'};
+
+$('btn-coach').onclick=async()=>{
+  $('btn-coach').disabled=true;
+  try{
+    const r=await fetch('/api/coach',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({session_id:SESSION,title:$('title').value,draft:$('draft').value,
+        article:$('article').value,focus_question:$('focus_question').value,
+        source_name:$('source_name').value,pub_date:$('pub_date').value,stage:'all'})});
+    if(!r.ok){const e=await r.json().catch(()=>({detail:r.statusText}));throw new Error(e.detail);}
+    const data=await r.json();
+    SESSION=data.session_id;
+    let h='<h3 style="font-size:.9rem;margin:10px 0 4px">Coach — which reasoning is not yet proven?</h3>';
+    if(data.core_findings){
+      h+=renderCore(data.core_findings.filter(c=>c.must_fix),'Must fix');
+      h+=renderCore(data.core_findings.filter(c=>!c.must_fix),'Could deepen');
+      const src=data.results.map(x=>`${STAGE_LABEL[x.stage]}: ${x.source}`).join(' · ');
+      h+=`<p class="notice">${src}</p>`;
+      $('results').innerHTML=h;return;
+    }
+    for(const res of data.results){
+      const n=res.findings.length;
+      h+=`<div style="margin:10px 0 2px;font-weight:700;font-size:.85rem">${STAGE_LABEL[res.stage]}`+
+         ` <span style="font-weight:400;color:var(--muted)">· ${res.source}${res.fallback_reason?' ('+esc(res.fallback_reason)+')':''}</span></div>`;
+      if(!n){h+='<div class="check pass">No open reasoning gaps at this stage.</div>';continue;}
+      for(const [i,f] of res.findings.entries()){
+        const ev=f.evidence.startsWith('quote:')
+          ?`<q>“${esc(f.evidence.slice(6))}”</q>`:`<code>${esc(f.evidence)}</code>`;
+        h+=`<div class="check ${f.severity==='major'?'warn':''}" id="cf-${res.log_id}-${i}">`+
+           `<span class="lbl" style="color:${SEV_COLOR[f.severity]}">[${f.severity}]</span> `+
+           `${esc(f.finding)}<br>${ev}<div class="soc" style="font-weight:700;margin-top:3px">${esc(f.question)}</div>`+
+           `<div style="margin-top:4px"><button onclick="coachAct('${res.log_id}','accepted')" `+
+           `style="font-size:.75rem;padding:2px 10px">Working on it</button> `+
+           `<button onclick="coachAct('${res.log_id}','dismissed')" `+
+           `style="font-size:.75rem;padding:2px 10px;background:var(--bg);color:var(--muted)">Dismiss</button></div></div>`;
+      }
+    }
+    $('results').innerHTML=h;
+  }catch(e){$('results').insertAdjacentHTML('afterbegin',`<p class="err">${e.message}</p>`);}
+  finally{$('btn-coach').disabled=false;}
+};
+
+function renderCore(items,title){
+  if(!items.length) return '';
+  let h=`<div style="margin:12px 0 4px;font-weight:700;font-size:.88rem">${title} (${items.length})</div>`;
+  for(const c of items){
+    const ev=c.evidence.startsWith('quote:')
+      ?`<q>“${esc(c.evidence.slice(6).trim())}”</q>`:`<code>${esc(c.evidence)}</code>`;
+    const stages=c.stages.map(s=>STAGE_LABEL[s]).join(' · ');
+    const views=(c.views||[]).map(v=>
+      `<div style="margin-top:3px;font-size:.8rem;color:var(--muted)">↳ ${STAGE_LABEL[v.stage]}: ${esc(v.finding)}</div>`).join('');
+    h+=`<div class="check ${c.must_fix?'warn':''}">`+
+       `<span class="lbl" style="color:${SEV_COLOR[c.severity]}">#${c.n} [${c.severity}]</span> `+
+       `${esc(c.finding)}<br>${ev}<div class="soc" style="font-weight:700;margin-top:3px">${esc(c.question)}</div>`+
+       `<div style="font-size:.75rem;color:var(--muted);margin-top:2px">seen in: ${stages}</div>${views}</div>`;
+  }
+  return h;
+}
+
+async function coachAct(logId,action){
+  await fetch('/api/coach/action',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({session_id:SESSION,log_id:logId,action})});
+}
+$('btn-portfolio').onclick=async()=>{
+  const data=await(await fetch('/api/portfolio')).json();
+  let h='<h3 style="font-size:.9rem;margin:10px 0 4px">Portfolio status</h3>';
+  for(const c of data.status.checks)
+    h+=`<div class="check ${c.status}"><span class="lbl">${esc(c.label)}:</span> ${esc(c.detail)}</div>`;
+  h+='<h3 style="font-size:.9rem;margin:10px 0 4px">Commentaries</h3>';
+  for(const s of data.sessions)
+    h+=`<div class="check"><span class="lbl">${esc(s.title)}</span> — ${s.rounds} round(s) · `+
+       `${esc(s.meta.unit||'unit?')} · ${esc(s.meta.key_concept||'concept?')} · `+
+       `<a href="/api/report/${s.id}" target="_blank">archive</a></div>`;
+  $('results').innerHTML=h;
+};
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+function render(data){
+  let h='';
+  if(data.similarity_to_previous!=null)
+    h+=`<p class="notice">Revision delta: ${(data.similarity_to_previous*100).toFixed(1)}% similar to your previous round.</p>`;
+  h+='<h3 style="font-size:.9rem;margin:10px 0 4px">Pre-flight</h3>';
+  for(const c of data.preflight)
+    h+=`<div class="check ${c.status}"><span class="lbl">${esc(c.label)}:</span> ${esc(c.detail)}</div>`;
+  if(data.claims&&data.claims.length){
+    h+='<h3 style="font-size:.9rem;margin:12px 0 4px">Claim / evidence map</h3>';
+    for(const cl of data.claims)
+      h+=`<div class="check ${cl.supported?'pass':'warn'}">`+
+         `<span class="lbl">[${cl.type}${cl.supported?'':' · needs evidence?'}]</span> `+
+         `<q>“${esc(cl.sentence)}”</q></div>`;
+  }
+  if(data.feedback_error) h+=`<p class="err">${esc(data.feedback_error)}</p>`;
+  if(data.feedback){
+    h+='<h3 style="font-size:.9rem;margin:14px 0 4px">Criterion feedback (coach estimates, not marks)</h3>';
+    for(const c of data.feedback.criteria){
+      const meta=CONFIG.criteria.find(x=>x.id===c.id)||{name:'',max:''};
+      h+=`<div class="crit"><div class="crit-h"><span>${c.id} · ${esc(meta.name)}</span>`+
+         `<span>band ~${c.band_estimate.low}–${c.band_estimate.high} / ${meta.max}</span></div><div class="crit-b">`;
+      for(const s of (c.strengths||[])) h+=`<div class="strength">✓ ${esc(s)}</div>`;
+      for(const i of (c.issues||[]))
+        h+=`<div class="issue"><q>“${esc(i.quote)}”</q> — ${esc(i.why)}<div class="soc">${esc(i.socratic_question)}</div></div>`;
+      h+='</div></div>';
+    }
+    if(data.feedback.next_focus)
+      h+=`<div class="next-focus">Next focus → ${esc(data.feedback.next_focus)}</div>`;
+  }
+  h+=`<p class="meta-line">${esc(CONFIG.verify_note)}</p>`;
+  $('results').innerHTML=h;
+}
+</script>
+</body>
+</html>

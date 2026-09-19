@@ -1,0 +1,26 @@
+The article discusses a proposed 20% tax on sugary drinks. Sugary drinks are a
+demerit good because they are overconsumed and create a negative externality of
+consumption: the marginal social benefit of consumption lies below the marginal
+private benefit, since obesity-related treatment costs of $48 million fall
+partly on taxpayers rather than on drinkers themselves.
+
+As Figure 1 shows, the market equilibrium quantity is greater than the socially
+optimal quantity, creating a welfare loss. An indirect tax of 20% shifts the
+supply curve upward, raising price and reducing quantity demanded toward the
+social optimum. Because demand from teenagers is estimated to fall by up to 15%,
+demand appears relatively elastic for this group, so the tax may be effective at
+reducing consumption where the health risk is greatest.
+
+This is an example of government intervention to correct market failure. The
+$12 million in revenue earmarked for school sports programmes could further
+increase economic well-being.
+
+However, the tax is likely regressive: low-income households spend a larger
+share of income on these drinks, so they bear a larger burden. In the short run,
+cross-border shopping in the neighbouring county could blunt the effect, as the
+article notes, and 300 retail jobs may be at risk. In the long run, producers
+may reformulate drinks with less sugar, which would reduce the externality at
+its source. On balance, the tax is justified because the fall in consumption of
+22% seen in the nearby state suggests the intervention works, but the government
+should consider using part of the revenue to offset the burden on low-income
+households.

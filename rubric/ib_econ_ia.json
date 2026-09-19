@@ -1,0 +1,107 @@
+{
+  "syllabus": "IB Economics (first assessment 2022)",
+  "verify_note": "Criteria transcribed for coaching use. Verify wording and marks against the current IB Economics Guide before high-stakes use.",
+  "word_limit": 800,
+  "portfolio": {
+    "commentaries": 3,
+    "total_marks": 45,
+    "rubric_marks": 3,
+    "requirements": [
+      "Each commentary uses a different key concept as a lens",
+      "Each commentary is based on a different unit of the syllabus",
+      "Articles come from three different sources",
+      "Each article was published no earlier than one year before the commentary was written",
+      "Each commentary is no more than 800 words"
+    ]
+  },
+  "key_concepts": [
+    "scarcity", "choice", "efficiency", "equity", "economic well-being",
+    "sustainability", "change", "interdependence", "intervention"
+  ],
+  "criteria": [
+    {
+      "id": "A",
+      "name": "Diagrams",
+      "max": 3,
+      "asks": "Are relevant, accurate, correctly labelled diagrams included and fully explained?",
+      "coach_checklist": [
+        "Diagram is relevant to the article's central economic issue",
+        "Axes, curves and equilibria are fully and correctly labelled",
+        "The text explains the diagram: what shifts, why, and what the new outcome is",
+        "The diagram uses the article's specifics (real prices, goods, actors) not generic P/Q"
+      ]
+    },
+    {
+      "id": "B",
+      "name": "Terminology",
+      "max": 2,
+      "asks": "Is relevant economic terminology used appropriately throughout?",
+      "coach_checklist": [
+        "Terms are defined the first time they carry analytical weight",
+        "Terms are used precisely (e.g. demand vs quantity demanded)",
+        "Terminology appears throughout, not clustered in one definitions paragraph"
+      ]
+    },
+    {
+      "id": "C",
+      "name": "Application and key concept",
+      "max": 2,
+      "asks": "Is relevant economic theory, and the chosen key concept, applied to the article throughout?",
+      "coach_checklist": [
+        "Theory is tied to named actors, numbers and events from the article",
+        "One key concept is explicitly chosen and used as a lens, not name-dropped",
+        "No paragraph is pure textbook theory with no article link"
+      ]
+    },
+    {
+      "id": "D",
+      "name": "Analysis",
+      "max": 3,
+      "asks": "Is relevant economic theory explained with effective, developed chains of reasoning linked to the article?",
+      "coach_checklist": [
+        "Cause-and-effect chains are complete (A → B → C, no jumps)",
+        "The 'why' behind each shift or outcome is explained, not asserted",
+        "Analysis follows from the diagram rather than running parallel to it"
+      ]
+    },
+    {
+      "id": "E",
+      "name": "Evaluation",
+      "max": 4,
+      "asks": "Are judgments made and supported by reasoned arguments (synthesis of the analysis)?",
+      "coach_checklist": [
+        "Considers at least two of: stakeholders, short run vs long run, magnitude/significance, assumptions and their limits, counterarguments",
+        "Judgments are argued from the analysis, not bolted on in the last paragraph",
+        "Reaches a supported conclusion rather than 'it depends' with no direction"
+      ]
+    }
+  ],
+  "terminology_lexicon": [
+    "opportunity cost", "scarcity", "demand", "supply", "quantity demanded", "quantity supplied",
+    "equilibrium", "disequilibrium", "market failure", "externality", "negative externality",
+    "positive externality", "marginal social cost", "marginal social benefit", "marginal private cost",
+    "marginal private benefit", "welfare loss", "deadweight loss", "allocative efficiency",
+    "productive efficiency", "consumer surplus", "producer surplus", "price elasticity of demand",
+    "price elasticity of supply", "income elasticity", "cross elasticity", "inelastic", "elastic",
+    "indirect tax", "specific tax", "ad valorem", "subsidy", "price ceiling", "price floor",
+    "minimum wage", "excess demand", "excess supply", "shortage", "surplus", "black market",
+    "merit good", "demerit good", "public good", "free rider", "common pool resource",
+    "asymmetric information", "moral hazard", "adverse selection", "monopoly", "oligopoly",
+    "monopolistic competition", "perfect competition", "barriers to entry", "market power",
+    "abnormal profit", "normal profit", "aggregate demand", "aggregate supply", "inflation",
+    "deflation", "disinflation", "unemployment", "cyclical unemployment", "structural unemployment",
+    "frictional unemployment", "monetary policy", "fiscal policy", "interest rate", "exchange rate",
+    "appreciation", "depreciation", "current account", "trade deficit", "trade surplus", "tariff",
+    "quota", "protectionism", "comparative advantage", "terms of trade", "economic growth",
+    "real GDP", "nominal GDP", "multiplier", "crowding out", "progressive tax", "regressive tax",
+    "income distribution", "poverty trap", "nudge", "price mechanism", "incentive", "substitutes",
+    "complements", "normal good", "inferior good"
+  ],
+  "evaluation_cues": {
+    "stakeholders": ["stakeholder", "consumers", "producers", "government", "workers", "society", "taxpayers", "firms", "households", "third part"],
+    "time_frame": ["short run", "long run", "short-run", "long-run", "over time", "in the longer term", "immediately", "eventually"],
+    "magnitude": ["magnitude", "significant", "small effect", "large effect", "depends on the size", "extent", "degree to which", "elasticity of"],
+    "assumptions": ["assumes", "assumption", "ceteris paribus", "in reality", "however, this model", "limitation", "simplif"],
+    "counterargument": ["however", "on the other hand", "conversely", "critics", "alternatively", "nevertheless", "an opposing"]
+  }
+}

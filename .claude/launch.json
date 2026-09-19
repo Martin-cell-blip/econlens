@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "econlens",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "uvicorn", "econlens.app:app", "--port", "8760"],
+      "port": 8760
+    }
+  ]
+}
